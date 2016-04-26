@@ -3,16 +3,9 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<title>SMW Randomizer</title>
+		<title>Mike Tyson's Punch-Out!! Randomizer</title>
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-
-		<meta name="twitter:card" content="summary_large_image">
-		<meta name="twitter:site" content="@smwcommunity">
-		<meta name="twitter:creator" content="@_authorblues">
-		<meta name="twitter:title" content="Mike Tyson's Punch-Out!! Randomizer">
-		<meta name="twitter:description" content="Generate fully-customizable randomized MTPO roms.">
-		<!--meta name="twitter:image" content="http://authorblues.github.io/mtporandomizer/img/twitter-card.png?1"-->
 
 		<!--link rel="icon" type="image/x-icon" href="dolphin.ico"-->
 		<!--link rel="icon" type="image/png" href="dolphin.png"-->
@@ -43,7 +36,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-6">
-					<input type="file" id="original-rom" accept=".sfc,.smc">
+					<input type="file" id="original-rom" accept=".nes">
 					<button id="select-original-rom" class="btn btn-default btn-full-width">
 						<span class="glyphicon glyphicon-question-sign" aria-hidden="true" id="original-rom-result"></span>
 						Select Original NTSC-U (English) ROM
@@ -84,13 +77,13 @@
 					<div class="checkbox">
 						<label>
 							<input type="checkbox" id="randomize_roundlength" class="presetoption">
-							Randomize Round Length
+							<span data-en_us="Randomize" data-en_gb="Randomise">Randomize</span> Round Length
 						</label>
 					</div>
 					<div class="checkbox">
 						<label>
 							<input type="checkbox" id="randomize_hearts" class="presetoption">
-							Randomize Hearts (Initial hearts given, awarded, and penalized)
+							<span data-en_us="Randomize" data-en_gb="Randomise">Randomize</span> Hearts (Initial hearts given, awarded, and penalized)
 						</label>
 					</div>
 				</div>

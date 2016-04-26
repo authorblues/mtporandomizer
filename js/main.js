@@ -3,6 +3,12 @@ var BASEURL = window.location.origin + window.location.pathname;
 
 var EN_US = false;
 
+// these are the md5 of the only roms that we will accept
+var ORIGINAL_MD5 =
+{
+	"b9a66b2760daa7d5639cbad903de8a18": true,
+};
+
 function doRandomize(buffer, seed)
 {
 	try
