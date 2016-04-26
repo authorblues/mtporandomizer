@@ -16,7 +16,7 @@ function doRandomize(buffer, seed)
 		var result = randomizeROM(buffer, seed);
 		var url = BASEURL + '#!/' + result.seed + '/' + result.preset;
 		$('#link-text').val(url);
-	//	saveAs(new Blob([result.buffer], {type: "octet/stream"}), 'mtpo-' + result.seed + result.type);
+		saveAs(new Blob([result.buffer], {type: "octet/stream"}), 'mtpo-' + result.seed + result.type);
 	}
 	catch (e)
 	{
