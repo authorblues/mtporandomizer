@@ -30,6 +30,9 @@ function randomizeROM(buffer, seed)
 	return { seed: vseed, preset: preset, buffer: rom.buffer, type: ext || '.nes' };
 }
 
+function toBinaryCodedDecimal(dec)
+{ return (Math.floor(dec/10) << 4) | (dec%10); }
+
 function randomizeRoundLength(random, rom)
 {
 	rom[0x0E7D2] = 1 + random.nextInt(5);
@@ -45,11 +48,11 @@ function randomizeHearts(random, rom)
 	rom[0x0E0E2] = random.nextIntRange(0x01, 0x06);
 
 	// Glass Joe
-	rom[0x0132C] = 1 + random.nextInt(20); // start round 1
-	rom[0x0132F] = 1 + random.nextInt(20); // start round 2
-	rom[0x01330] = 1 + random.nextInt(20); // start round 3
-	rom[0x0132D] = 1 + random.nextInt(15); // after running out and dodging
-	rom[0x0132E] = 1 + random.nextInt( 9); // after getting up from KO
+	rom[0x0132C] = toBinaryCodedDecimal(1 + random.nextInt(20)); // start round 1
+	rom[0x0132F] = toBinaryCodedDecimal(1 + random.nextInt(20)); // start round 2
+	rom[0x01330] = toBinaryCodedDecimal(1 + random.nextInt(20)); // start round 3
+	rom[0x0132D] = toBinaryCodedDecimal(1 + random.nextInt(15)); // after running out and dodging
+	rom[0x0132E] = toBinaryCodedDecimal(1 + random.nextInt( 9)); // after getting up from KO
 }
 
 function randomizeGlassJoePatterns(random, rom)
