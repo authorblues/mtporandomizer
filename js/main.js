@@ -14,18 +14,12 @@ function doRandomize(buffer, seed)
 	try
 	{
 		var result = randomizeROM(buffer, seed);
-		var url = BASEURL + '#!/' + result.seed + '/' + result.preset;
-		$('#link-text').val(url);
 		saveAs(new Blob([result.buffer], {type: "octet/stream"}), 'mtpo-' + result.seed + result.type);
 	}
 	catch (e)
 	{
 		$('#modal-error-win #modal-error-text').text(e.name + ': ' + e.message);
 		$('#modal-error-win #modal-error-list').empty();
-
-		if (e instanceof ValidationError)
-			for (var i = 0; i < e.errors.length; ++i)
-				$('#modal-error-win #modal-error-list').append($('<li>').text(e.errors[i]).addClass('mono'));
 
 		$('#modal-error-win').modal('show');
 		throw e;

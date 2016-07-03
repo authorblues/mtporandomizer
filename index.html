@@ -41,15 +41,6 @@
 						<span class="glyphicon glyphicon-question-sign" aria-hidden="true" id="original-rom-result"></span>
 						Select Original NTSC-U (English) ROM
 					</button>
-
-					<div class="input-group top-spaced">
-						<div class="input-group-addon">
-							<span><span data-en_us="Randomizer" data-en_gb="Randomiser">Randomizer</span> Preset</span>
-						</div>
-						<select class="form-control" id="preset">
-							<option value="0">&lt;Custom&gt;</option>
-						</select>
-					</div>
 				</div>
 
 				<div class="col-md-6">
@@ -63,11 +54,6 @@
 							</button>
 						</span>
 					</div>
-
-					<div class="form-group top-spaced">
-						<input type="text" class="form-control mono"
-							placeholder="Link to ROM" id="link-text">
-					</div>
 				</div>
 			</div>
 
@@ -76,35 +62,35 @@
 					<h3>General Properties</h3>
 					<div class="checkbox">
 						<label>
-							<input type="checkbox" id="randomize_roundlength" class="presetoption">
+							<input type="checkbox" id="randomize_roundlength" checked>
 							<span data-en_us="Randomize" data-en_gb="Randomise">Randomize</span> Round Length
 						</label>
 					</div>
 					<div class="checkbox">
 						<label>
-							<input type="checkbox" id="randomize_hearts" class="presetoption">
+							<input type="checkbox" id="randomize_hearts" checked>
 							<span data-en_us="Randomize" data-en_gb="Randomise">Randomize</span> Hearts (Initial hearts given, awarded, and penalized)
 						</label>
 					</div>
 				</div>
 				<div class="col-md-6">
-					<h3>Glass Joe</h3>
+					<h3>Fighter Properties</h3>
 					<div class="checkbox">
 						<label>
-							<input type="checkbox" id="glassjoe_patterns" class="presetoption">
-							Glass Joe's Speed/Patterns
+							<input type="checkbox" id="randomize_patterns" checked>
+							Fighter Speed/Patterns
 						</label>
 					</div>
 					<div class="checkbox">
 						<label>
-							<input type="checkbox" id="glassjoe_damage" class="presetoption">
-							Glass Joe's Health/Damage (taken and dealt)
+							<input type="checkbox" id="randomize_damage" checked>
+							Fighter Health/Damage (taken and dealt)
 						</label>
 					</div>
 					<div class="checkbox">
 						<label>
-							<input type="checkbox" id="glassjoe_threshold" class="presetoption">
-							Glass Joe's Points Threshold (for win by decision)
+							<input type="checkbox" id="randomize_threshold" checked>
+							Fighter Points Threshold (for win by decision)
 						</label>
 					</div>
 				</div>
@@ -189,7 +175,6 @@
 		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
 
 		<script src="js/randomizer.js"></script>
-		<script src="js/randomizer.preset.js"></script>
 
 		<script src="js/vendor/bootstrap.min.js"></script>
 		<script src="js/vendor/FileSaver.min.js"></script>
