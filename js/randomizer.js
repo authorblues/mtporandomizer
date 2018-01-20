@@ -1,4 +1,4 @@
-var VERSION_STRING = 'v0.4';
+var VERSION_STRING = 'v0.5';
 
 function randomizeROM(buffer, seed)
 {
@@ -18,6 +18,18 @@ function randomizeROM(buffer, seed)
 	if ($('#randomize_hearts').is(':checked'))
 		randomizeHearts(random, rom);
 
+	if ($('#always_rematch').is(':checked'))
+	{
+		rom[0x1A96C] = 0xEA;
+		rom[0x1A96D] = 0xEA;
+		rom[0x1A96E] = 0xEA;
+		rom[0x1A967] = 0xEA;
+		rom[0x1A968] = 0xEA;
+		rom[0x1A969] = 0xEA;
+		rom[0x1AE41] = 0xEA;
+		rom[0x1AE42] = 0xEA;
+	}
+
 	if ($('#randomize_patterns' ).is(':checked')) randomizePatterns(random, rom);
 	if ($('#randomize_damage'   ).is(':checked')) randomizeDamage(random, rom);
 	if ($('#randomize_threshold').is(':checked')) randomizeThreshold(random, rom);
@@ -34,17 +46,17 @@ function combineNibbles(a, b)
 
 function randomizeRoundLength(random, rom)
 {
-	rom[0x0E7D2] = random.nextIntRange(2, 6);
+	rom[0x0E7D2] = random.nextIntRange(0x03, 0x06);
 	rom[0x0E80E] = rom[0x0E7D2] + 1;
 }
 
 function randomizeHearts(random, rom)
 {
 	// hearts lost when opponent lands punch on Mac
-	rom[0x0E154] = random.nextIntRange(0x03, 0x05);
+	rom[0x0E154] = random.nextIntRange(0x04, 0x07);
 
 	// hearts lost when Mac blocks a punch
-	rom[0x0E0E2] = random.nextIntRange(0x01, 0x03);
+	rom[0x0E0E2] = random.nextIntRange(0x01, 0x04);
 
 	// --------------------- GLASS JOE
 	rom[0x0132C] = toBinaryCodedDecimal(random.nextIntRange(10, 21)); // start round 1
@@ -54,53 +66,130 @@ function randomizeHearts(random, rom)
 	rom[0x0132E] = toBinaryCodedDecimal(random.nextIntRange( 5, 10)); // after getting up from KO
 
 	// --------------------- VON KAISER
-	rom[0x05279] = toBinaryCodedDecimal(random.nextIntRange(10, 21));
-	rom[0x0527A] = toBinaryCodedDecimal(random.nextIntRange(10, 21));
-	rom[0x0527B] = toBinaryCodedDecimal(random.nextIntRange( 8, 16));
-	rom[0x0527C] = toBinaryCodedDecimal(random.nextIntRange(10, 21));
-	rom[0x0527D] = toBinaryCodedDecimal(random.nextIntRange( 8, 16));
+	rom[0x05279] = toBinaryCodedDecimal(random.nextIntRange(12, 21));
+	rom[0x0527A] = toBinaryCodedDecimal(random.nextIntRange(12, 21));
+	rom[0x0527B] = toBinaryCodedDecimal(random.nextIntRange(12, 16));
+	rom[0x0527C] = toBinaryCodedDecimal(random.nextIntRange(12, 21));
+	rom[0x0527D] = toBinaryCodedDecimal(random.nextIntRange(12, 16));
 	rom[0x0527E] = toBinaryCodedDecimal(random.nextIntRange( 5, 11));
-	rom[0x0527F] = toBinaryCodedDecimal(random.nextIntRange(10, 21));
+	rom[0x0527F] = toBinaryCodedDecimal(random.nextIntRange(12, 16));
 
 	// --------------------- PISTON HONDA
-	rom[0x0BB4E] = toBinaryCodedDecimal(random.nextIntRange(25, 51));
-	rom[0x0BB4F] = toBinaryCodedDecimal(random.nextIntRange(10, 21));
+	rom[0x0BB4E] = toBinaryCodedDecimal(random.nextIntRange(12, 51));
+	rom[0x0BB4F] = toBinaryCodedDecimal(random.nextIntRange(12, 21));
 	rom[0x0BB50] = toBinaryCodedDecimal(random.nextIntRange( 5, 11));
-	rom[0x0BB51] = toBinaryCodedDecimal(random.nextIntRange(10, 21));
-	rom[0x0BB52] = toBinaryCodedDecimal(random.nextIntRange(10, 21));
+	rom[0x0BB51] = toBinaryCodedDecimal(random.nextIntRange(12, 21));
+	rom[0x0BB52] = toBinaryCodedDecimal(random.nextIntRange(12, 21));
 	rom[0x0BB53] = toBinaryCodedDecimal(random.nextIntRange( 5, 11));
-	rom[0x0BB54] = toBinaryCodedDecimal(random.nextIntRange(10, 21));
-	rom[0x0BB55] = toBinaryCodedDecimal(random.nextIntRange(10, 21));
+	rom[0x0BB54] = toBinaryCodedDecimal(random.nextIntRange(12, 21));
+	rom[0x0BB55] = toBinaryCodedDecimal(random.nextIntRange(12, 21));
 	rom[0x0BB56] = toBinaryCodedDecimal(random.nextIntRange( 5, 11));
 
 	// --------------------- DON FLAMENCO
-/*	rom[0x014D9] = toBinaryCodedDecimal(random.nextIntRange( 1,10));
-	rom[0x014DA] = toBinaryCodedDecimal(random.nextIntRange( 1, 7));
-	rom[0x014DB] = toBinaryCodedDecimal(random.nextIntRange( 1, 3));
-	rom[0x014DC] = toBinaryCodedDecimal(random.nextIntRange( 1, 7));
-	rom[0x014DD] = toBinaryCodedDecimal(random.nextIntRange( 1, 5));
-*/
+	rom[0x014D9] = toBinaryCodedDecimal(random.nextIntRange( 5,11));
+	rom[0x014DA] = toBinaryCodedDecimal(random.nextIntRange( 5, 8));
+	rom[0x014DB] = toBinaryCodedDecimal(random.nextIntRange( 2, 4));
+	rom[0x014DC] = toBinaryCodedDecimal(random.nextIntRange( 5, 8));
+	rom[0x014DD] = toBinaryCodedDecimal(random.nextIntRange( 3, 6));
+
 	// --------------------- KING HIPPO
-	rom[0x02C64] = toBinaryCodedDecimal(random.nextIntRange( 5, 10));
-	rom[0x02C65] = toBinaryCodedDecimal(random.nextIntRange( 5, 10));
-	rom[0x02C66] = toBinaryCodedDecimal(random.nextIntRange( 5, 10));
-	rom[0x02C67] = toBinaryCodedDecimal(random.nextIntRange( 5, 10));
-	rom[0x02C68] = toBinaryCodedDecimal(random.nextIntRange( 5, 10));
-	rom[0x02C69] = toBinaryCodedDecimal(random.nextIntRange( 5, 10));
-	rom[0x02C6A] = toBinaryCodedDecimal(random.nextIntRange( 5, 10));
-	rom[0x02C6B] = toBinaryCodedDecimal(random.nextIntRange( 5, 10));
-	rom[0x02C6C] = toBinaryCodedDecimal(random.nextIntRange( 5, 10));
+	rom[0x02C64] = toBinaryCodedDecimal(random.nextIntRange( 7,  9));
+	rom[0x02C65] = toBinaryCodedDecimal(random.nextIntRange( 7,  9));
+	rom[0x02C66] = toBinaryCodedDecimal(random.nextIntRange( 7,  9));
+	rom[0x02C67] = toBinaryCodedDecimal(random.nextIntRange( 7,  9));
+	rom[0x02C68] = toBinaryCodedDecimal(random.nextIntRange( 7,  9));
+	rom[0x02C69] = toBinaryCodedDecimal(random.nextIntRange( 7,  9));
+	rom[0x02C6A] = toBinaryCodedDecimal(random.nextIntRange( 7,  9));
+	rom[0x02C6B] = toBinaryCodedDecimal(random.nextIntRange( 7,  9));
+	rom[0x02C6C] = toBinaryCodedDecimal(random.nextIntRange( 7,  9));
 
 	// --------------------- GREAT TIGER
-	rom[0x053DF]
-	rom[0x053E0]
-	rom[0x053E1]
-	rom[0x053E2]
-	rom[0x053E3]
-	rom[0x053E4]
-	rom[0x053E5]
-	rom[0x053E6]
-	rom[0x053E7]
+	rom[0x053DF] = toBinaryCodedDecimal(random.nextIntRange(44, 78));
+	rom[0x053E0] = toBinaryCodedDecimal(random.nextIntRange( 8, 12));
+	rom[0x053E1] = toBinaryCodedDecimal(random.nextIntRange( 8, 12));
+	rom[0x053E2] = toBinaryCodedDecimal(random.nextIntRange(22, 34));
+	rom[0x053E3] = toBinaryCodedDecimal(random.nextIntRange(22, 34));
+	rom[0x053E4] = toBinaryCodedDecimal(random.nextIntRange(22, 34));
+	rom[0x053E5] = toBinaryCodedDecimal(random.nextIntRange(44, 78));
+	rom[0x053E6] = toBinaryCodedDecimal(random.nextIntRange(22, 34));
+	rom[0x053E7] = toBinaryCodedDecimal(random.nextIntRange(22, 34));
+
+	// --------------------- BALD BULL
+	rom[0x78ED] = toBinaryCodedDecimal(random.nextIntRange(12, 16));
+	rom[0x78EE] = toBinaryCodedDecimal(random.nextIntRange( 5, 11));
+	rom[0x78EF] = toBinaryCodedDecimal(random.nextIntRange( 5,  8));
+	rom[0x78F0] = toBinaryCodedDecimal(random.nextIntRange( 5, 13));
+	rom[0x78F1] = toBinaryCodedDecimal(random.nextIntRange( 5,  8));
+	rom[0x78F2] = toBinaryCodedDecimal(random.nextIntRange( 5,  8));
+	rom[0x78F3] = toBinaryCodedDecimal(random.nextIntRange( 5, 11));
+	rom[0x78F4] = toBinaryCodedDecimal(random.nextIntRange( 5,  9));
+	rom[0x78F5] = toBinaryCodedDecimal(random.nextIntRange( 3,  6));
+
+	// --------------------- PISTON HONDA 2
+	rom[0xBAEE] = toBinaryCodedDecimal(random.nextIntRange(12, 21));
+	rom[0xBAEF] = toBinaryCodedDecimal(random.nextIntRange( 5,  9));
+	rom[0xBAF0] = toBinaryCodedDecimal(random.nextIntRange( 5,  7));
+	rom[0xBAF1] = toBinaryCodedDecimal(random.nextIntRange(12, 16));
+	rom[0xBAF2] = toBinaryCodedDecimal(random.nextIntRange( 5,  9));
+	rom[0xBAF3] = toBinaryCodedDecimal(random.nextIntRange( 5,  7));
+	rom[0xBAF4] = toBinaryCodedDecimal(random.nextIntRange( 5,  9));
+	rom[0xBAF5] = toBinaryCodedDecimal(random.nextIntRange( 5,  7));
+	rom[0xBAF6] = toBinaryCodedDecimal(random.nextIntRange( 5,  7));
+
+	// --------------------- SODA POPINKSI
+	rom[0x09A62] = toBinaryCodedDecimal(random.nextIntRange( 5,  9));
+	rom[0x09A63] = toBinaryCodedDecimal(random.nextIntRange( 5,  8));
+	rom[0x09A64] = toBinaryCodedDecimal(random.nextIntRange( 3,  6));
+	rom[0x09A65] = toBinaryCodedDecimal(random.nextIntRange( 5,  7));
+	rom[0x09A66] = toBinaryCodedDecimal(random.nextIntRange( 3,  6));
+	rom[0x09A67] = toBinaryCodedDecimal(random.nextIntRange( 2,  4));
+	rom[0x09A68] = toBinaryCodedDecimal(random.nextIntRange( 3,  5));
+	rom[0x09A69] = toBinaryCodedDecimal(random.nextIntRange( 2,  4));
+	rom[0x09A6A] = toBinaryCodedDecimal(random.nextIntRange( 1,  3));
+
+	// --------------------- DON FLAMENCO 2
+	rom[0x01539] = toBinaryCodedDecimal(random.nextIntRange(12, 16));
+	rom[0x0153A] = toBinaryCodedDecimal(random.nextIntRange( 5, 11));
+	rom[0x0153B] = toBinaryCodedDecimal(random.nextIntRange( 3,  6));
+	rom[0x0153C] = toBinaryCodedDecimal(random.nextIntRange( 5, 11));
+	rom[0x0153D] = toBinaryCodedDecimal(random.nextIntRange( 5,  9));
+	rom[0x0153E] = toBinaryCodedDecimal(random.nextIntRange( 2,  4));
+	rom[0x0153F] = toBinaryCodedDecimal(random.nextIntRange( 5,  9));
+	rom[0x01540] = toBinaryCodedDecimal(random.nextIntRange( 5,  9));
+	rom[0x01541] = toBinaryCodedDecimal(random.nextIntRange( 1,  3));
+	
+	// --------------------- MR SANDMAN
+	rom[0x01539] = toBinaryCodedDecimal(random.nextIntRange(12, 41));
+	rom[0x0153A] = toBinaryCodedDecimal(random.nextIntRange( 5, 11));
+	rom[0x0153B] = toBinaryCodedDecimal(random.nextIntRange( 5,  8));
+	rom[0x0153C] = toBinaryCodedDecimal(random.nextIntRange(12, 16));
+	rom[0x0153D] = toBinaryCodedDecimal(random.nextIntRange( 5, 11));
+	rom[0x0153E] = toBinaryCodedDecimal(random.nextIntRange( 5,  7));
+	rom[0x0153F] = toBinaryCodedDecimal(random.nextIntRange( 5, 11));
+	rom[0x01540] = toBinaryCodedDecimal(random.nextIntRange( 5,  9));
+	rom[0x01541] = toBinaryCodedDecimal(random.nextIntRange( 3,  5));
+	
+	// --------------------- SUPER MACHO MAN
+	rom[0x0988E] = toBinaryCodedDecimal(random.nextIntRange(12, 16));
+	rom[0x0988F] = toBinaryCodedDecimal(random.nextIntRange( 5, 11));
+	rom[0x09890] = toBinaryCodedDecimal(random.nextIntRange( 5,  8));
+	rom[0x09891] = toBinaryCodedDecimal(random.nextIntRange( 5, 11));
+	rom[0x09892] = toBinaryCodedDecimal(random.nextIntRange( 5, 11));
+	rom[0x09893] = toBinaryCodedDecimal(random.nextIntRange( 5,  8));
+	rom[0x09894] = toBinaryCodedDecimal(random.nextIntRange( 5,  9));
+	rom[0x09895] = toBinaryCodedDecimal(random.nextIntRange( 5,  9));
+	rom[0x09896] = toBinaryCodedDecimal(random.nextIntRange( 3,  6));
+	
+	// --------------------- MIKE TYSON
+	rom[0x0B81F] = toBinaryCodedDecimal(random.nextIntRange(12, 16));
+	rom[0x0B820] = toBinaryCodedDecimal(random.nextIntRange( 5,  9));
+	rom[0x0B821] = toBinaryCodedDecimal(random.nextIntRange( 3,  5));
+	rom[0x0B822] = toBinaryCodedDecimal(random.nextIntRange( 5,  9));
+	rom[0x0B823] = toBinaryCodedDecimal(random.nextIntRange( 5,  9));
+	rom[0x0B824] = toBinaryCodedDecimal(random.nextIntRange( 3,  5));
+	rom[0x0B825] = toBinaryCodedDecimal(random.nextIntRange( 5,  9));
+	rom[0x0B826] = toBinaryCodedDecimal(random.nextIntRange( 5,  7));
+	rom[0x0B827] = toBinaryCodedDecimal(random.nextIntRange( 2,  4));
 }
 
 function randomizePatterns(random, rom)
@@ -110,6 +199,11 @@ function randomizePatterns(random, rom)
 
 	for (var i = 0x1C838; i <= 0x1C83F; ++i)
 		rom[i] = random.flipCoin(blockchance) ? 0x08 : 0x00;
+	
+	// randomly pick one and set the pattern to ensure there is
+	// no guaranteed bad pattern
+	rom[random.from([0x1C83A, 0x1C83B, 0x1C83C, 0x1C83D])] = 0x08;
+	rom[random.from([0x1C838, 0x1C839, 0x1C83E, 0x1C83F])] = 0x00;
 
 	// --------------------- GLASS JOE
 	rom[0x01434] = random.nextIntRange(0x0A, 0xB6); // timing of round 1 charge attack
@@ -124,7 +218,7 @@ function randomizePatterns(random, rom)
 	rom[0x01337] = 5 + Math.min(Math.floor(Math.abs(random.nextGaussian() * 10)), 100);
 
 	// downtime values
-	for (var i = 0; i < 8; ++i) rom[0x01366+i] = random.nextIntRange(0x9B, 0xA3);
+	for (var i = 0; i < 8; ++i) rom[0x01366+i] = random.nextIntRange(0x9B, 0xA2);
 
 	// special scenario downtime values (XY, X = count, Y = health when up)
 	rom[0x013D7] = (random.nextIntRange(0x01, 0x0A) << 4) | random.nextIntRange(0x01, 0x0D);
@@ -173,6 +267,13 @@ function randomizePatterns(random, rom)
 	rom[0x014BB] = random.from([0x95, 0x96]);
 	rom[0x014BE] = random.from([0x95, 0x96]);
 	rom[0x014C1] = random.from([0x95, 0x96]);
+	
+	rom[0x00C74] = random.from([0x02, 0x04, 0x06, 0x16]);
+	rom[0x00C76] = random.from([0x99, 0x9F, 0xDA, 0xDF]);
+	
+	var gjhookspd = random.nextIntRange(4,9);
+	rom[0x01472] = (rom[0x01472] & 0x0F) | (gjhookspd << 8);
+	rom[0x01471] = random.nextIntRange(gjhookspd * 2, 0x19);
 
 	// --------------------- VON KAISER
 	blockchance = 0.1 + random.nextFloat() * 0.7;
@@ -235,75 +336,37 @@ function randomizePatterns(random, rom)
 	rom[0x0BD0C] = random.nextIntRange(0x20, 0xC2); // time of 2nd special R3
 
 	// attack patterns (1)
-	var PH_ATTACK_VALUES = [0x95, 0x96, 0x97, 0x98, 0x99, 0x9A, 0x9C];
-	rom[0x0BD90] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BD0A] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDA0] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDA2] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDA6] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDA7] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDA8] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDA9] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDAA] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDAB] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDB3] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDB4] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDB5] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDB6] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDB7] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDC2] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDC3] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDC4] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDC5] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDC6] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDC7] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDC8] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDC9] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDCD] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDCE] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDCF] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDD0] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDD1] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDD2] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDD3] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDD4] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDDC] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDDE] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDE6] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDE8] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDEA] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDEC] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDF1] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BDF3] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BE02] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BE04] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BE06] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BE0C] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BE0E] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BE10] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BE12] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BE16] = random.from(PH_ATTACK_VALUES);
-	rom[0x0BE18] = random.from(PH_ATTACK_VALUES);
+	var PH_ATTACK_VALUES = [0x95, 0x96, 0x97];
+	var phvalues = [0x99, 0x99, 0x98, 0x98, 0x9A, 0x9A];
+	
+	var ph_attack_pattern_addresses = [
+		0x0BD90, 0x0BD0A, 0x0BDA0, 0x0BDA2, 0x0BDA6, 0x0BDA7, 0x0BDA8, 0x0BDA9, 
+		0x0BDAA, 0x0BDAB, 0x0BDB3, 0x0BDB4, 0x0BDB5, 0x0BDB6, 0x0BDB7, 0x0BDC2, 
+		0x0BDC3, 0x0BDC4, 0x0BDC5, 0x0BDC6, 0x0BDC7, 0x0BDC8, 0x0BDC9, 0x0BDCD, 
+		0x0BDCE, 0x0BDCF, 0x0BDD0, 0x0BDD1, 0x0BDD2, 0x0BDD3, 0x0BDD4, 0x0BDDC, 
+		0x0BDD6, 0x0BDE8, 0x0BDEA, 0x0BDEC, 0x0BDF1, 0x0BDF3, 0x0BE02, 0x0BE04, 
+		0x0BE06, 0x0BE0C, 0x0BE0E, 0x0BE10, 0x0BE12, 0x0BE16, 0x0BE18];
+	while (phvalues.length < ph_attack_pattern_addresses.length)
+		phvalues.push(random.from(PH_ATTACK_VALUES));
+	phvalues.shuffle(random);
+	
+	for (var i = 0; i < ph_attack_pattern_addresses.length; ++i)
+		rom[ph_attack_pattern_addresses[i]] = phvalues[i];
 
 	// attack patterns (2)
-	rom[0x0BDE6] = random.nextIntRange(0x95, 0x9E);
-	rom[0x0BDE8] = random.nextIntRange(0x95, 0x9E);
-	rom[0x0BDEA] = random.nextIntRange(0x95, 0x9E);
-	rom[0x0BDEC] = random.nextIntRange(0x95, 0x9E);
-	rom[0x0BDF1] = random.nextIntRange(0x95, 0x9E);
-	rom[0x0BDF3] = random.nextIntRange(0x95, 0x9E);
-	rom[0x0BDFB] = random.nextIntRange(0x95, 0x9E);
-	rom[0x0BE02] = random.nextIntRange(0x95, 0x9E);
-	rom[0x0BE04] = random.nextIntRange(0x95, 0x9E);
-	rom[0x0BE06] = random.nextIntRange(0x95, 0x9E);
-	rom[0x0BE0A] = random.nextIntRange(0x95, 0x9E);
-	rom[0x0BE0C] = random.nextIntRange(0x95, 0x9E);
-	rom[0x0BE0E] = random.nextIntRange(0x95, 0x9E);
-	rom[0x0BE10] = random.nextIntRange(0x95, 0x9E);
-	rom[0x0BE12] = random.nextIntRange(0x95, 0x9E);
-	rom[0x0BE16] = random.nextIntRange(0x95, 0x9E);
-	rom[0x0BE18] = random.nextIntRange(0x95, 0x9E);
-	rom[0x0BE1E] = random.nextIntRange(0x95, 0x9E);
+	var PH_ATTACK_VALUES = [0x95, 0x96, 0x97];
+	var phvalues = [0x99, 0x99, 0x98, 0x98, 0x9A, 0x9A];
+	
+	var ph2_attack_pattern_addresses = [
+		0x0BDE6, 0x0BDE8, 0x0BDEA, 0x0BDEC, 0x0BDF1, 0x0BDF3, 0x0BDFB, 0x0BE02, 
+		0x0BE04, 0x0BE06, 0x0BE0A, 0x0BE0C, 0x0BE0E, 0x0BE10, 0x0BE12, 0x0BE16, 
+		0x0BE18, 0x0BE1E];
+	while (phvalues.length < ph2_attack_pattern_addresses.length)
+		phvalues.push(random.from(PH_ATTACK_VALUES));
+	phvalues.shuffle(random);
+	
+	for (var i = 0; i < ph2_attack_pattern_addresses.length; ++i)
+		rom[ph2_attack_pattern_addresses[i]] = phvalues[i];
 
 	// # of punches PH does in special attack
 	rom[0x0BD84] = random.nextIntRange(0x02, 0x1B);
@@ -315,28 +378,31 @@ function randomizePatterns(random, rom)
 
 	// downcounts
 	for (var i = 0; i < 8; ++i)
-		rom[0x0BB88+i] = random.nextIntRange(0x9B, 0xA2+i);
+		rom[0x0BB88+i] = random.nextIntRange(0x9B, 0xA2);
 
 	// # times you can hit PH when stunned
-	rom[0x0AEA5] = random.nextIntRange(0x01, 0x0B); // jab
-	rom[0x0BBAD] = random.nextIntRange(0x01, 0x0B); // uppercut
-	rom[0x0BBA9] = random.nextIntRange(0x01, 0x0B); // hook
+	rom[0x0AEA5] = random.nextIntRange(0x01, 0x05); // jab
+	rom[0x0BBAD] = random.nextIntRange(0x03, 0x0B); // uppercut
+	rom[0x0BBA9] = random.nextIntRange(0x03, 0x05); // hook
 
+	rom[0x0B095] = random.nextIntRange(0x04, 0x07);
+	rom[0x0B109] = random.nextIntRange(0x04, 0x07);
+	
 	// downtime (2)
-	rom[0x0BB28] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0BB29] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0BB2A] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0BB2B] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0BB2C] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0BB2D] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0BB2E] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0BB2F] = random.nextIntRange(0x9A, 0xA4);
+	rom[0x0BB28] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0BB29] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0BB2A] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0BB2B] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0BB2C] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0BB2D] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0BB2E] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0BB2F] = random.nextIntRange(0x9B, 0xA2);
 
 	// # hits when stunned
-	rom[0x0BBB3] = random.nextIntRange(0x03, 0x0B);
-	rom[0x0B0CC] = random.nextIntRange(0x03, 0x0B);
-	rom[0x0BBB5] = random.nextIntRange(0x03, 0x0B);
-	rom[0x0BBAF] = random.nextIntRange(0x03, 0x0B);
+	rom[0x0BBB3] = random.nextIntRange(0x02, 0x04);
+	rom[0x0B0CC] = random.nextIntRange(0x03, 0x05);
+	rom[0x0BBB5] = random.nextIntRange(0x03, 0x05);
+	rom[0x0BBAF] = random.nextIntRange(0x02, 0x04);
 
 	// --------------------- DON FLAMENCO
 	// blocking patterns (1&2)
@@ -362,21 +428,20 @@ function randomizePatterns(random, rom)
 
 	// opponent downtime
 	for (var i = 0x01513; i <= 0x0151A; ++i)
-		rom[i] = random.nextIntRange(0x9A, 0xA4);
+		rom[i] = random.nextIntRange(0x9B, 0xA2);
 
 	// down time after special (ko twice before 1:00 and not hit)
 	rom[0x17E12] = random.nextIntRange(0x9A, 0xA4);
 
 	// attack patterns
-	rom[0x01796] = random.nextIntRange(0x95, 0x99);
-	rom[0x017A1] = random.nextIntRange(0x95, 0x99);
-	rom[0x017A3] = random.nextIntRange(0x95, 0x99);
-	rom[0x017A5] = random.nextIntRange(0x95, 0x99);
-	rom[0x017AC] = random.nextIntRange(0x95, 0x99);
+	rom[0x017A1] = random.nextIntRange(0x95, 0x98);
+	rom[0x017A3] = random.nextIntRange(0x95, 0x98);
+	rom[0x017A5] = random.nextIntRange(0x95, 0x98);
+	rom[0x017AC] = random.nextIntRange(0x95, 0x98);
 
 	// # of times opponent stunned
 	rom[0x0159F] = random.nextIntRange(0x01, 0x03);
-	rom[0x015A3] = random.nextIntRange(0x01, 0x07);
+	rom[0x015A3] = random.nextIntRange(0x03, 0x07);
 
 	// punch speed
 	rom[0x0176A] = random.nextIntRange(0x10, 0x39);
@@ -396,7 +461,6 @@ function randomizePatterns(random, rom)
 	rom[0x02767] = random.flipCoin(blockchance) ? 0x08 : 0x00;
 	rom[0x02768] = random.flipCoin(blockchance) ? 0x08 : 0x00;
 	rom[0x02769] = random.flipCoin(blockchance) ? 0x08 : 0x00;
-	rom[0x0276A] = random.flipCoin(blockchance) ? 0x08 : 0x00;
 
 	// number of hits with pants down
 	rom[0x02972] = random.nextIntRange(0x03, 0x10);
@@ -509,20 +573,20 @@ function randomizePatterns(random, rom)
 //	rom[0x05559] = random.from(TIGER_ATTACK_VALUES);
 
 	// downtime values
-	rom[0x05419] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0541A] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0541B] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0541C] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0541D] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0541E] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0541F] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x05420] = random.nextIntRange(0x9A, 0xA4);
+	rom[0x05419] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0541A] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0541B] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0541C] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0541D] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0541E] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0541F] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x05420] = random.nextIntRange(0x9B, 0xA2);
 
 	// # hits when stunned
-	rom[0x0543E] = random.nextIntRange(0x03, 0x0B);
-	rom[0x04BDC] = random.nextIntRange(0x03, 0x0B);
-	rom[0x04BFD] = random.nextIntRange(0x03, 0x0B);
-	rom[0x05440] = random.nextIntRange(0x03, 0x0B);
+	rom[0x0543E] = random.nextIntRange(0x02, 0x04);
+	rom[0x04BDC] = random.nextIntRange(0x03, 0x06);
+	rom[0x04BFD] = random.nextIntRange(0x01, 0x03);
+	rom[0x05440] = random.nextIntRange(0x03, 0x06);
 
 	// punch speed
 	rom[0x0552F] = random.nextIntRange(0x10, 0x31);
@@ -541,7 +605,6 @@ function randomizePatterns(random, rom)
 	// --------------------- BALD BULL 1
 	var BBULL_ATTACK_VALUES =
 	[
-		0x99, 0x99,
 		0x97, 0x97, 0x97, 0x97, 0x97, 0x97, 0x97,
 		0x96, 0x96, 0x96, 0x96, 0x96, 0x96, 0x96, 0x96, 0x96,
 		0x95, 0x95, 0x95, 0x95, 0x95, 0x95, 0x95, 0x95, 0x95, 0x95, 0x95,
@@ -559,19 +622,19 @@ function randomizePatterns(random, rom)
 	rom[0x07CA0] = random.from(BBULL_ATTACK_VALUES);
 	rom[0x07CA2] = random.from(BBULL_ATTACK_VALUES);
 	rom[0x07CA4] = random.from(BBULL_ATTACK_VALUES);
-	rom[0x07CAA] = random.from(BBULL_ATTACK_VALUES);
+//	rom[0x07CAA] = random.from(BBULL_ATTACK_VALUES);
 	rom[0x07CB1] = random.from(BBULL_ATTACK_VALUES);
 	rom[0x07CB3] = random.from(BBULL_ATTACK_VALUES);
 	rom[0x07CB5] = random.from(BBULL_ATTACK_VALUES);
 	rom[0x07CB7] = random.from(BBULL_ATTACK_VALUES);
-	rom[0x07CB9] = random.from(BBULL_ATTACK_VALUES);
+//	rom[0x07CB9] = random.from(BBULL_ATTACK_VALUES);
 	rom[0x07CC1] = random.from(BBULL_ATTACK_VALUES);
 	rom[0x07CC3] = random.from(BBULL_ATTACK_VALUES);
 	rom[0x07CC9] = random.from(BBULL_ATTACK_VALUES);
 	rom[0x07CCB] = random.from(BBULL_ATTACK_VALUES);
 	rom[0x07CCD] = random.from(BBULL_ATTACK_VALUES);
-	rom[0x07CD1] = random.from(BBULL_ATTACK_VALUES);
-	rom[0x07CD8] = random.from(BBULL_ATTACK_VALUES);
+//	rom[0x07CD1] = random.from(BBULL_ATTACK_VALUES);
+//	rom[0x07CD8] = random.from(BBULL_ATTACK_VALUES);
 	rom[0x07CDC] = random.from(BBULL_ATTACK_VALUES);
 	rom[0x07CDE] = random.from(BBULL_ATTACK_VALUES);
 	rom[0x07CE0] = random.from(BBULL_ATTACK_VALUES);
@@ -582,19 +645,19 @@ function randomizePatterns(random, rom)
 	rom[0x07D00] = random.from(BBULL_ATTACK_VALUES);
 
 	// down time
-	rom[0x07927] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x07928] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x07929] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0792A] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0792B] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0792C] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0792D] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0792E] = random.nextIntRange(0x9A, 0xA4);
+	rom[0x07927] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x07928] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x07929] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0792A] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0792B] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0792C] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0792D] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0792E] = random.nextIntRange(0x9B, 0xA2);
 
 	// # hits when stunned
-	rom[0x070F2] = random.nextIntRange(0x03, 0x0B);
-	rom[0x079A8] = random.nextIntRange(0x03, 0x0B);
-	rom[0x079AC] = random.nextIntRange(0x03, 0x0B);
+	rom[0x070F2] = random.nextIntRange(0x01, 0x03);
+	rom[0x079A8] = random.nextIntRange(0x01, 0x03);
+	rom[0x079AC] = random.nextIntRange(0x03, 0x05);
 
 	// --------------------- SODA POPINSKI
 	// block chance (with SUPER MACHO MAN)
@@ -647,10 +710,10 @@ function randomizePatterns(random, rom)
 	rom[0x09AA3] = random.nextIntRange(0x9A, 0xA4);
 
 	// # hits when stunned
-	rom[0x09ABF] = random.nextIntRange(0x03, 0x0B);
-	rom[0x09AC5] = random.nextIntRange(0x03, 0x0B);
-	rom[0x09ABD] = random.nextIntRange(0x03, 0x0B);
-	rom[0x0918C] = random.nextIntRange(0x03, 0x0B);
+	rom[0x09ABF] = random.nextIntRange(0x02, 0x04);
+	rom[0x09AC5] = random.nextIntRange(0x03, 0x06);
+	rom[0x09ABD] = random.nextIntRange(0x02, 0x04);
+	rom[0x0918C] = random.nextIntRange(0x02, 0x04);
 
 	// --------------------- BALD BULL 2
 	// block chance
@@ -671,39 +734,21 @@ function randomizePatterns(random, rom)
 	rom[0x07803] = random.flipCoin(blockchance) ? 0x08 : 0x00;
 	rom[0x07804] = random.flipCoin(blockchance) ? 0x08 : 0x00;
 	rom[0x07805] = random.flipCoin(blockchance) ? 0x08 : 0x00;
-	rom[0x07CB1] = random.flipCoin(blockchance) ? 0x08 : 0x00;
+	
+	rom[random.from([0x077F8, 0x077F9, 0x077FC, 0x077FD])] = 0x00;
+	rom[random.from([0x07802, 0x07803, 0x07804, 0x07805])] = 0x00;
 
-	// attack patterns
-	rom[0x07CB1] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07CB3] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07CB5] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07BC7] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07BC9] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07CC1] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07BC3] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07CC9] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07CCB] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07CBD] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07CD1] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07CD8] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07CDC] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07CDE] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07CE0] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07CF0] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07CF6] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07CFA] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07CFE] = random.nextIntRange(0x95, 0x9A);
-	rom[0x07D00] = random.nextIntRange(0x95, 0x9A);
+	// attack patterns (taken care of in BALD BULL 1)
 
 	// downcounts
-	rom[0x07987] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x07988] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x07989] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0798A] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0798B] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0798C] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0798D] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0798E] = random.nextIntRange(0x9A, 0xA4);
+	rom[0x07987] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x07988] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x07989] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0798A] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0798B] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0798C] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0798D] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0798E] = random.nextIntRange(0x9B, 0xA2);
 
 	// # hits when stunned
 	rom[0x070F2] = random.nextIntRange(0x03, 0x0A);
@@ -712,70 +757,58 @@ function randomizePatterns(random, rom)
 	rom[0x079B8] = random.nextIntRange(0x03, 0x0A);
 
 	// --------------------- DON FLAMENCO 2
+	// hit patterns
+	rom[0x017B8] = random.from([0x95, 0x96, 0x97]);
+	rom[0x017BF] = random.from([0x95, 0x96, 0x97]);
+	rom[0x017D2] = random.from([0x95, 0x96, 0x97]);
+	rom[0x017F1] = random.from([0x95, 0x96, 0x97]);
+	rom[0x017F6] = random.from([0x95, 0x96, 0x97]);
+	rom[0x017F8] = random.from([0x95, 0x96, 0x97]);
+	rom[0x017FA] = random.from([0x95, 0x96, 0x97]);
+	rom[0x017FC] = random.from([0x95, 0x96, 0x97]);
+	
 	// downcounts
-	rom[0x01573] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x01574] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x01575] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x01576] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x01577] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x01578] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x01579] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0157A] = random.nextIntRange(0x9A, 0xA4);
+	rom[0x01573] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x01574] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x01575] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x01576] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x01577] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x01578] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x01579] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0157A] = random.nextIntRange(0x9B, 0xA2);
 
 	// # hits when stunned
-	rom[0x00C25] = random.nextIntRange(0x03, 0x0B);
-	rom[0x015A9] = random.nextIntRange(0x03, 0x0B);
-	rom[0x015AB] = random.nextIntRange(0x03, 0x0B);
-	rom[0x015B1] = random.nextIntRange(0x03, 0x0B);
+	rom[0x00C25] = random.nextIntRange(0x03, 0x05);
+	rom[0x015A9] = random.nextIntRange(0x01, 0x03);
+	rom[0x015AB] = random.nextIntRange(0x01, 0x03);
+	rom[0x015B1] = random.nextIntRange(0x03, 0x09);
 
 	// --------------------- MR. SANDMAN
-	rom[0x07E67] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07E6B] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07E6F] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07E73] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07E77] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07E81] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07E87] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07E89] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07E91] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07E93] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07E95] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07E97] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07E9D] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07E9F] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07EA6] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07EA8] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07EB4] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07EBA] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07EC0] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07EC3] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07EC5] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07EC7] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07ED5] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07EDB] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07EE1] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07EE4] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07EE6] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07EEC] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07EF8] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07EFE] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07F00] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07F02] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07F04] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07F09] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07F0B] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07F10] = random.nextIntRange(0x95, 0xA0);
-	rom[0x07F12] = random.nextIntRange(0x95, 0xA0);
+	var SM_ATTACK_VALUES = [0x95, 0x96, 0x97, 0x98, 0x99, 0x9C, 0x9F];
+	var smvalues = [0x9D, 0x9D, 0x9A, 0x9A, 0x9B, 0x9B];
+	
+	var sm_attack_pattern_addresses = [
+		0x07E67, 0x07E6B, 0x07E6F, 0x07E73, 0x07E77, 0x07E81, 0x07E87, 0x07E89, 
+		0x07E91, 0x07E93, 0x07E95, 0x07E97, 0x07E9D, 0x07E9F, 0x07EA6, 0x07EA8, 
+		0x07EB4, 0x07EBA, 0x07EC0, 0x07EC3, 0x07EC5, 0x07EC7, 0x07ED5, 0x07EDB, 
+		0x07EE1, 0x07EE4, 0x07EE6, 0x07EEC, 0x07EF8, 0x07EFE, 0x07F00, 0x07F02, 
+		0x07F04, 0x07F09, 0x07F0B, 0x07F10, 0x07F12];
+	while (smvalues.length < sm_attack_pattern_addresses.length)
+		smvalues.push(random.from(SM_ATTACK_VALUES));
+	smvalues.shuffle(random);
+	
+	for (var i = 0; i < sm_attack_pattern_addresses.length; ++i)
+		rom[sm_attack_pattern_addresses[i]] = smvalues[i];
 
 	// downcounts
-	rom[0x07D45] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x07D46] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x07D47] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x07D48] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x07D49] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x07D4A] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x07D4B] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x07D4C] = random.nextIntRange(0x9A, 0xA4);
+	rom[0x07D45] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x07D46] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x07D47] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x07D48] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x07D49] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x07D4A] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x07D4B] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x07D4C] = random.nextIntRange(0x9B, 0xA2);
 
 	// # hits when stunned
 	rom[0x070E6] = random.nextIntRange(0x03, 0x0B);
@@ -870,150 +903,56 @@ function randomizePatterns(random, rom)
 	rom[0x09A48] = random.from(MACHO_ATTACK_VALUES);
 
 	// downcounts
-	rom[0x098C8] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x098C9] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x098CA] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x098CB] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x098CC] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x098CD] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x098CE] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x098CF] = random.nextIntRange(0x9A, 0xA4);
+	rom[0x098C8] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x098C9] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x098CA] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x098CB] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x098CC] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x098CD] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x098CE] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x098CF] = random.nextIntRange(0x9B, 0xA2);
 
 	// # hits when stunned
-	rom[0x098EB] = random.nextIntRange(0x03, 0x0A);
-	rom[0x098E9] = random.nextIntRange(0x03, 0x0A);
+	rom[0x098EB] = random.nextIntRange(0x03, 0x06);
+	rom[0x098E9] = random.nextIntRange(0x02, 0x04);
 
 	// --------------------- TYSON
 	// hit patterns
-	var TYSON_ATTACK_VALUES = [0x95, 0x96, 0x97, 0x98, 0x99, 0x9A, 0x9C, 0x9D];
-	rom[0x0B9B5] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0B9BA] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0B9C1] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0B9C3] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0B9C8] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0B9CA] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0B9DC] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0B9E3] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0B9E5] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0B9ED] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0B9EF] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0B9F6] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0B9FB] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA08] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA09] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA0A] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA0B] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA0C] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA0D] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA0E] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA0F] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA11] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA12] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA13] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA14] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA15] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA16] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA17] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA18] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA1A] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA1B] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA1C] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA1D] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA1E] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA1F] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA20] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA21] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA28] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA2A] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA2F] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA30] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA31] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA32] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA33] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA34] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA35] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA36] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA4A] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA4B] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA4C] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA4D] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA4E] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA4F] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA50] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA51] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA53] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA54] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA55] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA56] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA57] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA58] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA59] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA5A] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA64] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA65] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA66] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA67] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA68] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA69] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA6A] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA6B] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA6F] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA71] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA77] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA78] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA79] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA7A] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA7B] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA7C] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA7D] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA7E] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA80] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA81] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA82] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA83] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA84] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA85] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA86] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA87] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA8A] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA8B] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA8C] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA8D] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA8E] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA8F] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA90] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA91] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA97] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA99] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA9B] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA9D] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BA9F] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BAA3] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BAA5] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BAB6] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BABA] = random.from(TYSON_ATTACK_VALUES);
-	rom[0x0BAC4] = random.from(TYSON_ATTACK_VALUES);
+	var TYSON_ATTACK_VALUES = [0x95, 0x96, 0x98, 0x99, 0x9A, 0x9C];
+	var mt_attack_pattern_addresses = [
+		0x0B9B5, 0x0B9BA, 0x0B9C1, 0x0B9C3, 0x0B9C8, 0x0B9CA, 0x0B9DC, 0x0B9E3, 0x0B9E5, 0x0B9ED, 0x0B9EF, 0x0B9F6, 0x0B9FB, 0x0BA08, 0x0BA09, 0x0BA0A, 0x0BA0B, 0x0BA0C, 0x0BA0D, 0x0BA0E, 0x0BA0F, 0x0BA11, 0x0BA12, 0x0BA13, 0x0BA14, 0x0BA15, 0x0BA16, 0x0BA17, 0x0BA18, 0x0BA1A, 0x0BA1B, 0x0BA1C, 0x0BA1D, 0x0BA1E, 0x0BA1F, 0x0BA20, 0x0BA21, 0x0BA28, 0x0BA2A, 0x0BA2F, 0x0BA30, 0x0BA31, 0x0BA32, 0x0BA33, 0x0BA34, 0x0BA35, 0x0BA36, 0x0BA4A, 0x0BA4B, 0x0BA4C, 0x0BA4D, 0x0BA4E, 0x0BA4F, 0x0BA50, 0x0BA51, 0x0BA53, 0x0BA54, 0x0BA55, 0x0BA56, 0x0BA57, 0x0BA58, 0x0BA59, 0x0BA5A, 0x0BA64, 0x0BA65, 0x0BA66, 0x0BA67, 0x0BA68, 0x0BA69, 0x0BA6A, 0x0BA6B, 0x0BA6F, 0x0BA71, 0x0BA77, 0x0BA78, 0x0BA79, 0x0BA7A, 0x0BA7B, 0x0BA7C, 0x0BA7D, 0x0BA7E, 0x0BA80, 0x0BA81, 0x0BA82, 0x0BA83, 0x0BA84, 0x0BA85, 0x0BA86, 0x0BA87, 0x0BA8A, 0x0BA8B, 0x0BA8C, 0x0BA8D, 0x0BA8E, 0x0BA8F, 0x0BA90, 0x0BA91, 0x0BA97, 0x0BA99, 0x0BA9B, 0x0BA9D, 0x0BA9F, 0x0BAA3, 0x0BAA5, 0x0BAB6, 0x0BABA, 0x0BAC4];
+	
+	for (var i = 0; i < mt_attack_pattern_addresses.length; ++i)
+	{
+		var addr = mt_attack_pattern_addresses[i];
+		if (rom[addr] == 0x97 || rom[addr] == 0x9D)
+		{
+			if (random.flipCoin(0.4))
+				rom[addr] ^= 0x97 ^ 0x9D;
+		}
+		else rom[addr] = random.from(TYSON_ATTACK_VALUES);
+	}
 
 	// downcounts
-	rom[0x0B859] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0B85A] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0B85B] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0B85C] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0B85D] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0B85E] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0B85F] = random.nextIntRange(0x9A, 0xA4);
-	rom[0x0B860] = random.nextIntRange(0x9A, 0xA4);
+	rom[0x0B859] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0B85A] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0B85B] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0B85C] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0B85D] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0B85E] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0B85F] = random.nextIntRange(0x9B, 0xA2);
+	rom[0x0B860] = random.nextIntRange(0x9B, 0xA2);
 
 	// # hits when stunned
-	rom[0x0B87F] = random.nextIntRange(0x03, 0x0B);
-	rom[0x0AF76] = random.nextIntRange(0x03, 0x0B);
-	rom[0x0AF24] = random.nextIntRange(0x03, 0x0B);
+	rom[0x0B87F] = random.nextIntRange(0x03, 0x06);
+	rom[0x0AF76] = random.nextIntRange(0x03, 0x06);
+	rom[0x0AF24] = random.nextIntRange(0x03, 0x06);
 }
 
 function randomizeDamage(random, rom)
 {
 	return; // FIXME
-
+	
 	// --------------------- GLASS JOE
 	rom[0x01359] = random.nextIntRange(0x00, 0x21); // damage to GJ from uppercut
 	rom[0x17C1F] = random.nextIntRange(0x06, 0x20); // damage to opponent from uppercut (high, low)
@@ -1038,12 +977,12 @@ function randomizeDamage(random, rom)
 		rom[i] = random.nextIntRange(0x08, 0x0D);
 
 	// --------------------- PISTON HONDA
-	rom[0x0BB57] = random.nextIntRange(0x15, 0x41); // PH damage constant
-	rom[0x0AE65] = random.nextIntRange(0x07, 0x21); // PH damage from jab
-	rom[0x0AFA6] = random.nextIntRange(0x07, 0x21); // PH damage from hook
-	rom[0x0B187] = random.nextIntRange(0x0F, 0x26); // PH damage from uppercut
-	rom[0x0B0A1] = random.nextIntRange(0x04, 0x11); // PH damage from quick rt
-	rom[0x0B115] = random.nextIntRange(0x04, 0x11); // PH damage from quick lt
+	rom[0x0BB57] = random.nextIntRange(0x15, 0x31); // PH damage constant
+	rom[0x0AE65] = random.nextIntRange(0x07, 0x16); // PH damage from jab
+	rom[0x0AFA6] = random.nextIntRange(0x07, 0x16); // PH damage from hook
+	rom[0x0B187] = random.nextIntRange(0x0F, 0x21); // PH damage from uppercut
+	rom[0x0B0A1] = random.nextIntRange(0x04, 0x07); // PH damage from quick rt
+	rom[0x0B115] = random.nextIntRange(0x04, 0x07); // PH damage from quick lt
 
 	rom[0x17B73] = random.nextIntRange(0x01, 0x06); // head punch (left)
 	rom[0x17A87] = random.nextIntRange(0x01, 0x06); // gut punch (left)
